@@ -59,15 +59,16 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-			steps {
-				withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBECONFIG')]) {
-					sh "sed -i 's|IMAGE_PLACEHOLDER|${DOCKER_IMAGE}:${IMAGE_TAG}|' k8s/deployment.yaml"
-					sh "kubectl apply -f k8s/deployment.yaml"
-					sh "kubectl apply -f k8s/service.yaml"
-					sh "kubectl rollout status deployment/pipeline-lab --timeout=120s"
-				}
-			}
-		}
+            steps {
+                sshagent(credentials: ['minikube-ssh-key']) {
+                    sh """
+                        sed -i 's|IMAGE_PLACEHOLDER|${DOCKER_IMAGE}:${IMAGE_TAG}|' k8s/deployment.yaml
+                        scp -o StrictHostKeyChecking=no k8s/deployment.yaml k8s/service.yaml ubuntu@172.31.84.243:/home/ubuntu/
+                        ssh -o StrictHostKeyChecking=no ubuntu@172.31.84.243 'kubectl apply -f /home/ubuntu/deployment.yaml -f /home/ubuntu/service.yaml && kubectl rollout status deployment/pipeline-lab --timeout=120s'
+                    """
+                }
+            }
+        }
     }
 
     post {
