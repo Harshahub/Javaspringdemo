@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE   = "venki/pipeline-lab"
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         DOCKERHUB_CRED = "dockerhub-creds"   // Jenkins credential ID, configure in Manage Jenkins > Credentials
-        KUBECONFIG_CRED = "kubeconfig-file"  // Jenkins credential ID for kubeconfig (Minikube, later EKS)
+        
     }
 
     stages {
@@ -50,15 +50,15 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBECONFIG')]) {
-                    sh "sed -i 's|IMAGE_PLACEHOLDER|${DOCKER_IMAGE}:${IMAGE_TAG}|' k8s/deployment.yaml"
-                    sh "kubectl apply -f k8s/deployment.yaml"
-                    sh "kubectl apply -f k8s/service.yaml"
-                    sh "kubectl rollout status deployment/pipeline-lab --timeout=120s"
-                }
-            }
-        }
+			steps {
+				withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBECONFIG')]) {
+					sh "sed -i 's|IMAGE_PLACEHOLDER|${DOCKER_IMAGE}:${IMAGE_TAG}|' k8s/deployment.yaml"
+					sh "kubectl apply -f k8s/deployment.yaml"
+					sh "kubectl apply -f k8s/service.yaml"
+					sh "kubectl rollout status deployment/pipeline-lab --timeout=120s"
+				}
+			}
+		}
     }
 
     post {
