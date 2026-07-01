@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Phase 1: Docker Hub. Phase 2: swap to ECR repo URI.
-        DOCKER_IMAGE   = "venki/pipeline-lab"
+        DOCKER_IMAGE   = "harshadocker13/pipeline-lab"
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         DOCKERHUB_CRED = "dockerhub-creds"   // Jenkins credential ID, configure in Manage Jenkins > Credentials
         
