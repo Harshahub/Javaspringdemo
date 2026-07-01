@@ -13,7 +13,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/<your-username>/devops-pipeline-lab.git'
+                git branch: 'main', url: 'https://github.com/Harshahub/Javaspringdemo.git'
             }
         }
 
