@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipeline-lab-svc
+spec:
+  selector:
+    app: pipeline-lab
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  # Phase 1 (Minikube): type NodePort works fine, use `minikube service pipeline-lab-svc`
+  # Phase 2 (EKS): change to LoadBalancer to get a real AWS ALB/NLB endpoint
+  type: NodePort
