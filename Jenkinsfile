@@ -17,11 +17,20 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
+        //stage('Build with Maven') {
+          //  steps {
+            //    sh 'mvn clean package -DskipTests'
+            //}
+        //}
+		stage('Build') {
+		environment {
+        // This targets the JDK 17 compiler you just installed
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+		}
+			steps {
+				sh 'mvn clean package -DskipTests'
+			}
+		}
 
         stage('Unit Tests') {
             steps {
